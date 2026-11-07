@@ -19,9 +19,11 @@ O **Neto Digital** acompanha o idoso no celular e fala, em português simples, o
 
 ### Preview online (Vercel)
 
-**[https://netodigital.vercel.app](https://netodigital.vercel.app)** — no **computador**, abre a demo do **celular simulado** (Dona Gina). Sem suas chaves no deploy, IA/Cloud podem cair no modo local.
+**[https://netodigital.vercel.app](https://netodigital.vercel.app)** — no **computador**, abre a demo do **celular simulado** (Dona Gina): desbloquear, apps, golpes, narrador local, etc.
 
-> A experiência **completa** (sua chave Gemini + Firestore de verdade) continua sendo no **PC local** — veja [Como rodar](#como-rodar).
+**Limitação da Vercel:** **Firestore (Cloud)** e **IA (Gemini)** **não funcionam** nesse link — as chaves ficam só na sua máquina e não sobem pro Git. Os selos Cloud/IA podem ficar apagados; o resto da UI roda.
+
+> Para **IA + Firestore de verdade**, clone o repo, configure `js/config/config.js` e rode **localmente** — veja [Como rodar](#como-rodar).
 
 ![Demo](docs/screenshots/demo.gif)
 
@@ -106,12 +108,14 @@ Roteiro do vídeo em [docs/roteiro-demo.md](docs/roteiro-demo.md).
 
 ### Importante: local × Vercel
 
-| Onde | O que você vê |
-|------|----------------|
-| **No seu computador (recomendado)** | Demo **completa** com **suas** chaves: celular, narrador, IA Gemini real, Firestore, painel |
-| **[netodigital.vercel.app](https://netodigital.vercel.app)** | Mesma UI do celular no PC; sem `config.js` no Git, usa fallback (narrador local / cloud offline). Bom pra abrir rápido — banca e vídeo preferem o local |
+| Onde | Celular simulado | Narrador | IA (Gemini) | Firestore (Cloud) |
+|------|------------------|----------|-------------|-------------------|
+| **PC local (recomendado)** | Sim | Sim | **Sim** (com sua chave) | **Sim** (com seu Firebase) |
+| **[Vercel](https://netodigital.vercel.app)** | Sim | Sim (local) | **Não** | **Não** |
 
-**Não precisa** abrir no celular físico. Abra a Vercel no **Chrome/Edge do computador**, clique em **Começar a demonstração** e entra na tela de bloqueio do aparelho simulado.
+Na Vercel a demo abre e dá pra clicar no celularzinho; **IA e Cloud só depois de baixar e configurar no PC**.
+
+**Não precisa** abrir no celular físico. No Chrome/Edge do computador: **Começar a demonstração** → tela de bloqueio (PIN demo `1234`).
 
 ### Pré-requisitos (local)
 
