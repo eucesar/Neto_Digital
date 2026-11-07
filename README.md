@@ -19,9 +19,11 @@ O **Neto Digital** acompanha o idoso no celular e fala, em português simples, o
 
 ### Preview online (Vercel)
 
-**[https://netodigital.vercel.app](https://netodigital.vercel.app)** — no **computador**, abre a demo do **celular simulado** (Dona Gina): desbloquear, apps, golpes, narrador local, etc.
+**[https://netodigital.vercel.app](https://netodigital.vercel.app)** — a demo já está funcional no ar, no celular e no computador.
 
-**Limitação da Vercel:** **Firestore (Cloud)** e **IA (Gemini)** **não funcionam** nesse link — as chaves ficam só na sua máquina e não sobem pro Git. Os selos Cloud/IA podem ficar apagados; o resto da UI roda.
+Abre o celular da Dona Gina, desbloqueia, entra nos apps e acompanha um golpe. A **voz guia a pessoa**: fala o próximo passo, avisa quando algo parece golpe e a legenda em português fica embaixo. Não é um chat para conversar com um bot. Os dados da sessão começam num padrão da manhã e sobem conforme você mexe. O painel da família lê essa mesma história.
+
+**O que não entra nesse link:** **Firebase (Firestore)** e **IA (Gemini)**. As chaves ficam só na sua máquina e não sobem para o Git. Os selos Cloud e IA podem ficar apagados. O resto da experiência roda.
 
 > Para **IA + Firestore de verdade**, clone o repo, configure `js/config/config.js` e rode **localmente** — veja [Como rodar](#como-rodar).
 
@@ -55,7 +57,7 @@ O Neto Digital é uma proposta **CitizenTech**: tecnologia a serviço do cidadã
 
 ## Funcionalidades
 
-- 🗣️ **Narrador em voz alta** (Web Speech API, pt-BR) com fila e prioridades
+- 🗣️ **Voz que guia** (Web Speech API) com fila, prioridades e legenda em português — ela fala com a pessoa, não é um chat
 - 👁️ **Visão da tela** com html2canvas + Gemini (JSON do que “vê”)
 - 🛡️ **Alerta de golpe** em ligação e em mensagens (falso parente / número denunciado)
 - 📵 **Silenciar** por botão, toque longo ou sacudir (tecla **M** no desktop)
@@ -108,14 +110,14 @@ Roteiro do vídeo em [docs/roteiro-demo.md](docs/roteiro-demo.md).
 
 ### Importante: local × Vercel
 
-| Onde | Celular simulado | Narrador | IA (Gemini) | Firestore (Cloud) |
-|------|------------------|----------|-------------|-------------------|
-| **PC local (recomendado)** | Sim | Sim | **Sim** (com sua chave) | **Sim** (com seu Firebase) |
-| **[Vercel](https://netodigital.vercel.app)** | Sim | Sim (local) | **Não** | **Não** |
+| Onde | Celular, voz que guia, golpes e dados | IA (Gemini) | Firestore (Cloud) |
+|------|----------------------------------------|-------------|-------------------|
+| **[Vercel](https://netodigital.vercel.app)** | **Sim** — experiência completa da demo | **Não** | **Não** |
+| **PC local** | Sim | **Sim** (com a sua chave) | **Sim** (com o seu Firebase) |
 
-Na Vercel a demo abre e dá pra clicar no celularzinho; **IA e Cloud só depois de baixar e configurar no PC**.
+Na Vercel dá para ter uma demo boa de ponta a ponta: celular, voz guiando, alertas e dados simulados. **IA e Firebase só funcionam depois de baixar o projeto e rodar no computador.**
 
-**Não precisa** abrir no celular físico. No Chrome/Edge do computador: **Começar a demonstração** → tela de bloqueio (PIN demo `1234`).
+No celular, o link já abre em mobile first. No Chrome ou Edge do computador: **Começar a demonstração** → tela de bloqueio (PIN demo `1234`).
 
 ### Pré-requisitos (local)
 
