@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Neto Digital — narrador inteligente do celular para idosos" />
+    <title>Neto Digital — Demonstração</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Syne:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/phone.css" />
+    <link rel="stylesheet" href="css/narrator.css" />
+    <link rel="stylesheet" href="css/presenter.css" />
+    <link rel="stylesheet" href="css/motion.css" />
+  </head>
+  <body>
+    <div id="startGate" class="start-gate">
+      <div class="start-card">
+        <img class="start-logo" src="assets/img/logo-full.png" alt="Neto Digital" width="320" height="110" />
+        <p class="start-kicker">CitizenTech · FIAP Global Solution</p>
+        <h1>Neto Digital</h1>
+        <p class="start-lead">
+          O narrador que fica do lado da Dona Gina — fala o próximo passo,
+          avisa golpe e mostra tudo isso para a família no painel.
+        </p>
+        <button type="button" id="btnStart" aria-label="Começar a demonstração">
+          Começar a demonstração
+        </button>
+        <a class="start-link" href="painel.html">Ver o que a família acompanha →</a>
+        <p class="start-note">Speech in English · Portuguese subtitle below</p>
+      </div>
+    </div>
+
+    <div id="demoShell" class="hidden">
+      <div class="demo-layout">
+        <div class="phone-stage">
+          <div class="stage-badge" aria-hidden="true"><span class="dot"></span> Ao vivo</div>
+          <p class="stage-title">Celular da Dona Gina</p>
+          <p class="stage-sub">Toque, ouça o Neto e acompanhe os selos ao lado</p>
+          <div class="phone-bezel" id="phone-bezel">
+            <div class="phone-notch" aria-hidden="true"></div>
+            <div class="phone-screen" id="phone-screen" role="main" aria-label="Celular simulado"></div>
+          </div>
+        </div>
+
+        <aside class="presenter-panel" id="presenter-panel" aria-label="Painel do apresentador">
+          <div class="presenter-head">
+            <div class="presenter-brand">
+              <img src="assets/img/logo-mark.svg" alt="" width="44" height="44" />
+              <div>
+                <strong>Controle da demo</strong>
+                <div class="presenter-sub">Selos GS · simulações · histórico</div>
+              </div>
+            </div>
+            <button type="button" id="presenterToggle" aria-label="Recolher painel">Recolher</button>
+          </div>
+          <div class="presenter-body">
+            <div class="selo-row" aria-label="Selos dos requisitos">
+              <div class="selo" id="selo-visao"><span>👁️</span> Visão</div>
+              <div class="selo" id="selo-ia"><span>🤖</span> IA</div>
+              <div class="selo" id="selo-dados"><span>📊</span> Dados</div>
+              <div class="selo" id="selo-cloud"><span>☁️</span> Cloud</div>
+            </div>
+
+            <p class="pres-section-title">Simular para o vídeo</p>
+            <div class="pres-actions">
+              <button type="button" id="simScamCall" class="btn-pres danger">🚨 Ligação de golpe</button>
+              <button type="button" id="simScamWa" class="btn-pres danger">💬 Mensagem de golpe</button>
+              <button type="button" id="simCesar" class="btn-pres ok">💚 Ligação do Cesar</button>
+              <button type="button" id="simPix" class="btn-pres">💸 Abrir Pix (banco)</button>
+              <button type="button" id="simChatIa" class="btn-pres ok">🤖 Chat com a IA</button>
+              <button type="button" id="toggleFone" class="btn-pres">🎧 Fone conectado</button>
+              <button type="button" id="btnReiniciar" class="btn-pres muted">Reiniciar demo</button>
+            </div>
+
+            <div class="pres-stats">
+              <div class="pres-stat">
+                <span>Firestore</span>
+                <strong id="presFirestore" class="status-pill">…</strong>
+              </div>
+              <div class="pres-stat">
+                <span>Gravação</span>
+                <strong id="presWrite">—</strong>
+              </div>
+              <div class="pres-stat">
+                <span>IA</span>
+                <strong id="presIaCount">0</strong>
+              </div>
+              <div class="pres-stat">
+                <span>Locais</span>
+                <strong id="presLocalCount">0</strong>
+              </div>
+              <div class="pres-stat">
+                <span>Custo</span>
+                <strong id="presCusto">R$ 0,000</strong>
+              </div>
+            </div>
+
+            <div class="pres-block">
+              <div class="pres-block-head">
+                <h3>Últimas 5 ações</h3>
+                <button type="button" id="btnPresMore" class="btn-mini">Ver mais</button>
+              </div>
+              <ul id="presHistory" class="pres-history">
+                <li class="empty">Ainda sem ações nesta sessão.</li>
+              </ul>
+            </div>
+
+            <div class="pres-block">
+              <h3>O que a visão leu</h3>
+              <div id="presVisionHuman" class="pres-vision">Aguardando captura da tela…</div>
+              <details class="pres-details">
+                <summary>JSON técnico</summary>
+                <pre id="presVisionJson">—</pre>
+              </details>
+            </div>
+
+            <div class="pres-block">
+              <h3>Fila de falas</h3>
+              <p id="presFila" class="pres-fila">(vazia)</p>
+            </div>
+
+            <a class="pres-family-link" href="painel.html">Abrir painel da família →</a>
+          </div>
+        </aside>
+      </div>
+
+      <div class="narrator-bar" role="region" aria-label="Legenda do narrador">
+        <div class="narrator-caption-wrap">
+          <span class="caption-label">Legenda (português)</span>
+          <div class="narrator-caption" id="narratorCaption" aria-live="polite">
+            Aguardando…
+          </div>
+          <span class="caption-hint">Speaking English · reading this Portuguese subtitle</span>
+        </div>
+        <div class="narrator-controls">
+          <button type="button" id="btnAMinus" aria-label="Diminuir fonte">A−</button>
+          <button type="button" id="btnAPlus" aria-label="Aumentar fonte">A+</button>
+          <button type="button" id="btnAPlusPlus" aria-label="Fonte máxima">A++</button>
+          <button type="button" id="btnContrast" aria-label="Alternar alto contraste">Contraste</button>
+          <button type="button" id="btnRepeat" aria-label="Repetir última fala">Repetir</button>
+          <button type="button" id="btnSilence" aria-label="Silenciar o narrador">🔇 Silenciar</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script type="module" src="js/core/app.js"></script>
+  </body>
+</html>

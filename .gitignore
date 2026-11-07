@@ -1,0 +1,18 @@
+# Chaves e segredos locais — nunca versionar
+js/config/config.js
+
+# Sistema e editores
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+node_modules/
