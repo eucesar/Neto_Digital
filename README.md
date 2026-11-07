@@ -17,12 +17,17 @@
 Aplicativos modernos não foram feitos para as mãos que mais precisam de calma.  
 O **Neto Digital** acompanha o idoso no celular e fala, em português simples, o que está acontecendo — antes que o golpe aconteça.
 
+### Demo online
+
+**[https://netodigital.vercel.app](https://netodigital.vercel.app)**
+
 ![Demo](docs/screenshots/demo.gif)
 
 </div>
 
 ## Sumário
 
+- [Demo online](#demo-online)
 - [Sobre o projeto](#sobre-o-projeto)
 - [Funcionalidades](#funcionalidades)
 - [Requisitos da Global Solution](#requisitos-da-global-solution)
@@ -93,9 +98,11 @@ Roteiro do vídeo em [docs/roteiro-demo.md](docs/roteiro-demo.md).
 | Visão | html2canvas (CDN) |
 | Gráficos | Chart.js (CDN) |
 | Nuvem | Firebase JS SDK modular — **somente Firestore** |
-| Hosting | Firebase Hosting |
+| Hosting | Vercel (demo) · Firebase Hosting (opcional) |
 
 ## Como rodar
+
+> Demo publicada: [https://netodigital.vercel.app](https://netodigital.vercel.app)
 
 ### Pré-requisitos
 
