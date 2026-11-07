@@ -11,9 +11,9 @@
   --surface: #151c2c;
   --surface-2: #1c2438;
   --line: #2a3348;
-  --font-base: 20px;
+  --font-base: 16px;
   --radius: 16px;
-  --touch: 56px;
+  --touch: 48px;
   --font-display: "Syne", "Segoe UI", sans-serif;
   --font-body: "Manrope", "Segoe UI", sans-serif;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -195,8 +195,8 @@ a {
 
 @media (max-width: 720px) {
   :root {
-    --font-base: 17px;
-    --touch: 48px;
+    --font-base: 15px;
+    --touch: 44px;
   }
 }
 

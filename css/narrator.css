@@ -9,7 +9,7 @@
     rgba(11, 15, 24, 0.94);
   backdrop-filter: blur(16px) saturate(1.2);
   border-top: 1px solid rgba(245, 193, 74, 0.28);
-  padding: 0.85rem 1.15rem calc(0.85rem + env(safe-area-inset-bottom));
+  padding: 0.55rem 1rem calc(0.55rem + env(safe-area-inset-bottom));
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 0.85rem;
@@ -44,7 +44,7 @@
 }
 
 .narrator-caption {
-  font-size: 1.18rem;
+  font-size: 1.02rem;
   color: var(--cream);
   min-height: 1.5em;
   font-weight: 700;
@@ -77,8 +77,8 @@ body.modo-discreto .caption-hint {
 }
 
 #btnSilence {
-  min-height: 72px;
-  min-width: 170px;
+  min-height: 52px;
+  min-width: 140px;
   background: linear-gradient(180deg, #ff7d6b, var(--coral));
   color: #fff;
   font-weight: 800;
@@ -104,8 +104,8 @@ body.modo-discreto .caption-hint {
 #btnContrast {
   background: var(--surface-2);
   color: var(--cream);
-  min-height: 52px;
-  padding: 0 0.85rem;
+  min-height: 42px;
+  padding: 0 0.7rem;
   font-weight: 700;
   border: 1px solid var(--line);
 }
