@@ -9,7 +9,7 @@ import {
   GEMINI_ENDPOINT,
   GEMINI_TIMEOUT_MS,
   GEMINI_MODEL_FALLBACKS,
-} from "../config/config.js";
+} from "../config/settings.js";
 import { acenderSelo, getState, patchContadores } from "../core/state.js";
 import { emit } from "../core/event-bus.js";
 

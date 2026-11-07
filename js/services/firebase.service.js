@@ -1,6 +1,6 @@
 // Firestore via CDN modular — só Cloud Firestore (sem Auth/Storage).
 
-import { firebaseConfig } from "../config/config.js";
+import { firebaseConfig } from "../config/settings.js";
 import { adicionarEventoLocal, listarEventosLocal } from "./storage.service.js";
 import { emit } from "../core/event-bus.js";
 import { acenderSelo, getState } from "../core/state.js";

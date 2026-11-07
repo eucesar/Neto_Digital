@@ -17,9 +17,11 @@
 Aplicativos modernos não foram feitos para as mãos que mais precisam de calma.  
 O **Neto Digital** acompanha o idoso no celular e fala, em português simples, o que está acontecendo — antes que o golpe aconteça.
 
-### Demo online
+### Preview online (Vercel)
 
-**[https://netodigital.vercel.app](https://netodigital.vercel.app)**
+**[https://netodigital.vercel.app](https://netodigital.vercel.app)** — no **computador**, abre a demo do **celular simulado** (Dona Gina). Sem suas chaves no deploy, IA/Cloud podem cair no modo local.
+
+> A experiência **completa** (sua chave Gemini + Firestore de verdade) continua sendo no **PC local** — veja [Como rodar](#como-rodar).
 
 ![Demo](docs/screenshots/demo.gif)
 
@@ -27,7 +29,7 @@ O **Neto Digital** acompanha o idoso no celular e fala, em português simples, o
 
 ## Sumário
 
-- [Demo online](#demo-online)
+- [Preview online (Vercel)](#preview-online-vercel)
 - [Sobre o projeto](#sobre-o-projeto)
 - [Funcionalidades](#funcionalidades)
 - [Requisitos da Global Solution](#requisitos-da-global-solution)
@@ -102,32 +104,56 @@ Roteiro do vídeo em [docs/roteiro-demo.md](docs/roteiro-demo.md).
 
 ## Como rodar
 
-> Demo publicada: [https://netodigital.vercel.app](https://netodigital.vercel.app)
+### Importante: local × Vercel
 
-### Pré-requisitos
+| Onde | O que você vê |
+|------|----------------|
+| **No seu computador (recomendado)** | Demo **completa** com **suas** chaves: celular, narrador, IA Gemini real, Firestore, painel |
+| **[netodigital.vercel.app](https://netodigital.vercel.app)** | Mesma UI do celular no PC; sem `config.js` no Git, usa fallback (narrador local / cloud offline). Bom pra abrir rápido — banca e vídeo preferem o local |
 
-- Navegador moderno (Chrome/Edge recomendados para voz)
-- Extensão **Live Server** no VS Code (módulos ES não abrem via `file://`)
-- Conta Google (chave Gemini) e projeto Firebase (Firestore)
+**Não precisa** abrir no celular físico. Abra a Vercel no **Chrome/Edge do computador**, clique em **Começar a demonstração** e entra na tela de bloqueio do aparelho simulado.
 
-### Passos
+### Pré-requisitos (local)
+
+- Navegador moderno (**Chrome** ou **Edge** — melhor suporte à voz)
+- [VS Code](https://code.visualstudio.com/) + extensão **Live Server** (módulos ES **não** abrem com `file://`)
+- Conta Google: crie **sua própria** chave no [Google AI Studio](https://aistudio.google.com/)
+- Projeto Firebase com Firestore (pode usar o seu; sem nuvem a demo cai em `localStorage`)
+
+### Passos (local)
 
 ```bash
-# 1. Entre na pasta do projeto
-cd neto-digital
+# 1. Clone o repositório
+git clone https://github.com/eucesar/Neto_Digital.git
+cd Neto_Digital
 
-# 2. Copie a configuração
-# Windows (PowerShell):
-Copy-Item js\config\config.example.js js\config\config.js
+# 2. Copie o arquivo de configuração de exemplo
+# Git Bash / Linux / macOS:
+cp js/config/config.example.js js/config/config.js
 
-# 3. Edite js/config/config.js
-#    - GEMINI_API_KEY (mesma do NexaTalk IA / Google AI Studio)
-#    - firebaseConfig do seu projeto
+# Windows PowerShell (alternativa):
+# Copy-Item js\config\config.example.js js\config\config.js
 
-# 4. Abra com Live Server a pasta neto-digital (index.html)
+# 3. Edite js/config/config.js e preencha COM AS SUAS CHAVES:
+#    - GEMINI_API_KEY   → sua chave do Google AI Studio
+#    - firebaseConfig   → seu projeto Firebase
+
+# 4. No VS Code, abra a pasta do projeto e inicie o Live Server
+#    em index.html (porta típica: http://127.0.0.1:5500)
+
+# 5. (Opcional) Painel da família:
+#    abra painel.html pelo mesmo Live Server
 ```
 
-### Publicar no Firebase Hosting
+### Chaves e segredos — leia isto
+
+- **Não use a chave Gemini (nem Firebase) de outra pessoa.** Cada um gera a **própria** no Google AI Studio / console Firebase.
+- O arquivo `js/config/config.js` **não vai para o Git** (está no `.gitignore`). No repo só existe o `config.example.js`, sem segredos.
+- Se alguém colar chave alheia, estoura cota, pode gerar cobrança e viola o uso da API — **não faça isso**.
+- Sem chave Gemini a demo **ainda roda** com regras/frases locais.  
+  Sem Firestore a demo **ainda roda** com `localStorage`.
+
+### Publicar no Firebase Hosting (opcional)
 
 ```bash
 firebase login
@@ -135,9 +161,6 @@ firebase use SEU_PROJECT_ID
 firebase deploy --only hosting
 # opcional: firebase deploy --only firestore:rules
 ```
-
-> Sem chave Gemini a demo **continua** com regras locais.  
-> Sem Firestore a demo **continua** com localStorage.
 
 ## Estrutura de pastas
 
@@ -167,7 +190,7 @@ neto-digital/
 ## Segurança e privacidade
 
 - **Não gravamos** imagens da tela, áudio, nomes reais, números completos nem o texto das mensagens — só metadados (`tipo`, `tela`, `alvo`, `risco`).
-- A chave do Gemini fica em `js/config/config.js`, fora do Git.
+- A chave do Gemini fica **somente** em `js/config/config.js` na sua máquina — **nunca** versionada. Use sempre a **sua** chave.
 - As `firestore.rules` permitem create restrito e bloqueiam update/delete.
 - Em **produção**: chamada Gemini via backend/Cloud Function, Firebase App Check, autenticação, chave Gemini restrita por domínio e somente à API Generative Language, e LGPD com base legal + minimização de dados.
 
