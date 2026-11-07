@@ -5,7 +5,7 @@ import {
   getFirestoreStatus,
   getUltimaGravacaoOk,
 } from "../services/firebase.service.js";
-import { getFila } from "../services/speech.service.js";
+import { getPainelFila } from "../services/speech.service.js";
 import {
   simularLigacaoGolpe,
   simularLigacaoCesar,
@@ -13,11 +13,20 @@ import {
 import { simularMensagemGolpe, abrirChatIa } from "../phone/whatsapp.js";
 import { navegar } from "../phone/router.js";
 import { limparCacheVisao } from "../services/vision.service.js";
-import { rotuloEvento, formatarHora } from "../dashboard/activity.js";
+import {
+  rotuloEvento,
+  formatarHora,
+  historicoResumido,
+  TELAS,
+} from "../dashboard/activity.js";
+import { calcularMetricas } from "../dashboard/metrics.js";
+import { mesclarComPadrao } from "../data/padrao-sessao.js";
 
 const CUSTO_POR_CHAMADA = 0.002;
 const historico = [];
+const eventosAoVivo = [];
 let mostrarTodas = false;
+let ultimoTotal = null;
 
 export function initPresenter() {
   const root = document.getElementById("presenter-panel");
@@ -55,8 +64,17 @@ export function initPresenter() {
     e.target.textContent = mostrarTodas ? "Só 5" : "Ver mais";
     renderHistorico();
   });
+  document.getElementById("btnScrollDados")?.addEventListener("click", () => {
+    document.getElementById("sessaoDados")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  });
 
   on("presenter:evento", (ev) => {
+    if (!ev) return;
+    eventosAoVivo.push(ev);
+    renderSessao();
     // Ignora spam de dígito a dígito no painel — agrupa na UI do histórico
     if (ev.tipo === "digito") {
       const last = historico[0];
@@ -123,16 +141,124 @@ export function initPresenter() {
   });
 
   on("scam:alert", (a) => mostrarAlertaFullscreen(a));
+  on("speech:fila", (itens) => renderFila(itens));
 
   setInterval(atualizarContadores, 1000);
   atualizarContadores();
+  renderSessao();
+}
+
+function esc(valor) {
+  return String(valor ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function renderBarras(itens, sufixo) {
+  if (!itens.length) return "";
+  const max = Math.max(...itens.map((item) => Number(item.valor) || 0), 1);
+  return `<div class="bar-list">${itens
+    .map((item) => {
+      const valor = Number(item.valor) || 0;
+      const pct = valor ? Math.max(10, Math.round((valor / max) * 100)) : 0;
+      return `<div class="bar-row">
+        <span>${esc(item.nome)}</span>
+        <div class="bar-track" aria-hidden="true"><div class="bar-fill" data-w="${pct}"></div></div>
+        <strong>${valor}${sufixo}</strong>
+      </div>`;
+    })
+    .join("")}</div>`;
+}
+
+function renderSessao() {
+  const todos = mesclarComPadrao(eventosAoVivo);
+  const m = calcularMetricas(todos);
+  const suas = eventosAoVivo.length;
+
+  const badge = document.getElementById("sessaoBadge");
+  if (badge) {
+    badge.textContent = suas
+      ? `Padrão + ${suas} ${suas === 1 ? "ação sua" : "ações suas"}`
+      : "Padrão simulado";
+    badge.classList.toggle("is-live", suas > 0);
+  }
+
+  const lead = document.getElementById("sessaoLead");
+  if (lead) {
+    lead.textContent = suas
+      ? `Você já somou ${suas} ${suas === 1 ? "ação" : "ações"} em cima do padrão da manhã.`
+      : "Um dia típico da Dona Gina. O que você fizer no celular soma em cima desse padrão.";
+  }
+
+  const kpis = [
+    { id: "acoes", rotulo: "Ações", valor: m.total },
+    { id: "golpes", rotulo: "Golpes", valor: m.golpes },
+    { id: "ajuda", rotulo: "Pediu ajuda", valor: m.seguiuOrientacao },
+    { id: "erros", rotulo: "Erros", valor: m.erros },
+  ];
+  const box = document.getElementById("sessaoKpis");
+  if (box) {
+    box.innerHTML = kpis
+      .map((k) => {
+        const subiu = k.id === "acoes" && ultimoTotal !== null && k.valor !== ultimoTotal;
+        return `<article class="sessao-kpi">
+          <span>${k.rotulo}</span>
+          <strong class="${subiu ? "is-up" : ""}">${k.valor}</strong>
+        </article>`;
+      })
+      .join("");
+  }
+  ultimoTotal = m.total;
+
+  const tempos = [
+    { nome: "Desbloquear", valor: m.tempoMedio.desbloquear },
+    { nome: "Ligar", valor: m.tempoMedio.ligar },
+    { nome: "Mensagem", valor: m.tempoMedio.mensagem },
+  ];
+  const telas = Object.entries(m.hesitacaoPorTela || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([chave, valor]) => ({ nome: TELAS[chave] || chave, valor }));
+
+  const bars = document.getElementById("sessaoBars");
+  if (bars) {
+    bars.innerHTML = `
+      <p class="pres-section-title">Tempo até concluir</p>
+      ${renderBarras(tempos, " s")}
+      <p class="pres-section-title">Onde ela passa</p>
+      ${renderBarras(telas, "")}`;
+    requestAnimationFrame(() => {
+      bars.querySelectorAll(".bar-fill").forEach((el) => {
+        el.style.width = `${el.dataset.w || 0}%`;
+      });
+    });
+  }
+
+  const ul = document.getElementById("sessaoHistory");
+  if (!ul) return;
+  const itens = historicoResumido(todos).slice(0, 5);
+  ul.innerHTML = itens
+    .map((t) => {
+      const hora = t.timestamp ? " · " + formatarHora(t.timestamp) : "";
+      const origem = t.simulado ? " · padrão" : " · agora";
+      return `<li class="tom-${esc(t.tom || "info")}">
+        <span class="ico">${t.icone || "•"}</span>
+        <div>
+          <strong>${esc(t.texto)}</strong>
+          <small>${esc(t.detalhe || "")}${hora}${origem}</small>
+        </div>
+      </li>`;
+    })
+    .join("");
 }
 
 function renderHistorico() {
   const ul = document.getElementById("presHistory");
   if (!ul) return;
   if (!historico.length) {
-    ul.innerHTML = `<li class="empty">Ainda sem ações nesta sessão.</li>`;
+    ul.innerHTML = `<li class="empty">Suas ações aparecem aqui. O padrão simulado está nos dados acima.</li>`;
     return;
   }
   const itens = mostrarTodas ? historico.slice(0, 20) : historico.slice(0, 5);
@@ -152,6 +278,25 @@ function renderHistorico() {
     .join("");
 }
 
+function renderFila(itens) {
+  const el = document.getElementById("presFila");
+  if (!el) return;
+  const lista = Array.isArray(itens) ? itens : getPainelFila();
+  if (!lista.length) {
+    el.innerHTML = `<li class="empty">(vazia)</li>`;
+    return;
+  }
+  const rotulo = { falando: "agora", espera: "na fila", feita: "já falou" };
+  el.innerHTML = lista
+    .map(
+      (item) => `<li class="fila-${esc(item.estado || "feita")}">
+        <span>${rotulo[item.estado] || "já falou"}</span>
+        <strong>${esc(item.texto)}</strong>
+      </li>`
+    )
+    .join("");
+}
+
 function acenderUi(id) {
   document.getElementById(id)?.classList.add("on");
 }
@@ -162,17 +307,11 @@ function atualizarContadores() {
   const elIa = document.getElementById("presIaCount");
   const elLocal = document.getElementById("presLocalCount");
   const elCusto = document.getElementById("presCusto");
-  const elFila = document.getElementById("presFila");
   const elFs = document.getElementById("presFirestore");
   if (elIa) elIa.textContent = String(ia);
   if (elLocal) elLocal.textContent = String(c.narracoesLocais);
   if (elCusto) elCusto.textContent = "R$ " + (ia * CUSTO_POR_CHAMADA).toFixed(3);
-  if (elFila) {
-    const f = getFila();
-    elFila.textContent = f.length
-      ? f.map((x) => x.texto).join(" → ")
-      : "(vazia)";
-  }
+  renderFila();
   if (elFs && (!elFs.textContent || elFs.textContent === "…")) {
     elFs.textContent = getFirestoreStatus();
     elFs.className = "status-pill " + getFirestoreStatus();

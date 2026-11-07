@@ -7,8 +7,10 @@ const PRIORIDADE = { alerta: 4, erro: 3, orientacao: 2, narracao: 1 };
 
 let fila = [];
 let falando = false;
+let emFala = null;
 let vozPadrao = null;
 let ultimaFala = { en: "", pt: "" };
+const ditas = [];
 
 function escolherVoz() {
   if (typeof speechSynthesis === "undefined") return null;
@@ -46,14 +48,40 @@ export function getFila() {
   return fila.map((f) => ({ texto: f.en, legenda: f.pt, prioridade: f.prioridade }));
 }
 
+function lembrar(par) {
+  if (!par?.pt) return;
+  ditas.unshift({ pt: par.pt });
+  if (ditas.length > 6) ditas.length = 6;
+}
+
+/** O que o painel mostra: a fala atual, as que esperam e as últimas já ditas. */
+export function getPainelFila() {
+  const itens = [];
+  if (emFala?.pt) itens.push({ texto: emFala.pt, estado: "falando" });
+  for (const item of fila) {
+    if (item?.pt) itens.push({ texto: item.pt, estado: "espera" });
+  }
+  for (const item of ditas) {
+    if (itens.length >= 6) break;
+    itens.push({ texto: item.pt, estado: "feita" });
+  }
+  return itens;
+}
+
+function publicarFila() {
+  emit("speech:fila", getPainelFila());
+}
+
 export function limparFila() {
   fila = [];
   falando = false;
+  emFala = null;
   if (typeof speechSynthesis !== "undefined") {
     try {
       speechSynthesis.cancel();
     } catch (_) {}
   }
+  publicarFila();
 }
 
 /**
@@ -68,6 +96,8 @@ export function falar(entrada, prioridade = "narracao") {
   emit("narrator:caption", { texto: par.pt, prioridade });
 
   if (state.silenciado || state.modoDiscreto) {
+    lembrar(par);
+    publicarFila();
     emit("speech:skipped", { texto: par.pt, motivo: "discreto" });
     return;
   }
@@ -80,18 +110,23 @@ export function falar(entrada, prioridade = "narracao") {
   }
 
   fila.push({ ...par, prioridade, nivel });
+  publicarFila();
   processarFila();
 }
 
 function processarFila() {
   if (falando || !fila.length) return;
   if (typeof speechSynthesis === "undefined") {
-    fila = [];
+    while (fila.length) lembrar(fila.shift());
+    emFala = null;
+    publicarFila();
     return;
   }
 
   const item = fila.shift();
   falando = true;
+  emFala = item;
+  publicarFila();
   emit("speech:start", item);
 
   const voz = escolherVoz();
@@ -109,15 +144,19 @@ function processarFila() {
   u.volume = state.volumeVoz ?? 1;
   u.pitch = 1;
 
-  u.onend = () => {
+  let jaEncerrou = false;
+  const encerrou = () => {
+    if (jaEncerrou) return;
+    jaEncerrou = true;
     falando = false;
+    lembrar(item);
+    emFala = null;
+    publicarFila();
     emit("speech:end", item);
     processarFila();
   };
-  u.onerror = () => {
-    falando = false;
-    processarFila();
-  };
+  u.onend = encerrou;
+  u.onerror = encerrou;
 
   try {
     speechSynthesis.resume();

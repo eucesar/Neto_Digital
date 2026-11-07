@@ -1,8 +1,9 @@
 import { initFirebase, ouvirEventos, getFirestoreStatus } from "../services/firebase.service.js";
 import { calcularMetricas, eventosParaCsv } from "./metrics.js";
-import { formatarHora } from "./activity.js";
+import { formatarHora, TELAS } from "./activity.js";
 import { getState } from "../core/state.js";
 import { getChamadasIa } from "../services/gemini.service.js";
+import { mesclarComPadrao } from "../data/padrao-sessao.js";
 
 let chartTarefas = null;
 let chartHesita = null;
@@ -11,6 +12,7 @@ let mostrarTodas = false;
 let historicoCompleto = [];
 
 async function boot() {
+  atualizar([]);
   await initFirebase();
   const cloud = document.getElementById("statusCloud");
   if (cloud) cloud.textContent = getFirestoreStatus();
@@ -40,8 +42,17 @@ async function boot() {
 }
 
 function atualizar(eventos) {
-  window.__netoEventos = eventos;
-  const m = calcularMetricas(eventos);
+  const reais = Array.isArray(eventos) ? eventos : [];
+  window.__netoEventos = reais;
+  const visiveis = mesclarComPadrao(reais);
+  const recentes = visiveis.filter((ev) => !ev.simulado).length;
+  const m = calcularMetricas(visiveis);
+  const nota = document.getElementById("dashPadrao");
+  if (nota) {
+    nota.textContent = recentes
+      ? `Padrão da manhã somado a ${recentes} ações recentes. A IA e o Firebase de verdade só funcionam no computador.`
+      : "Padrão simulado da manhã da Dona Gina. Use o celular na demo para os números subirem. A IA e o Firebase de verdade só funcionam no computador.";
+  }
   const c = getState().contadores;
   historicoCompleto = m.historico || [];
 
@@ -51,13 +62,18 @@ function atualizar(eventos) {
   setText("mErros", String(m.erros));
   setText("mGolpes", String(m.golpes));
   setText("mSeguiu", String(m.seguiuOrientacao));
-  setText("mIa", String(Math.max(c.chamadasIa, getChamadasIa())));
+  const ia = Math.max(c.chamadasIa, getChamadasIa());
+  setText("mIa", String(ia));
+  setText("mIaHint", ia ? "visão / golpes" : "Roda no computador");
   setText("mLocal", String(c.narracoesLocais || Math.max(0, m.total)));
   setText(
     "mGolpesHint",
     m.golpes ? "Toque nos insights abaixo" : "Nenhum alerta"
   );
-  setText("statusAcoes", `${m.total} ação(ões) na sessão`);
+  setText(
+    "statusAcoes",
+    m.total === 1 ? "1 ação na sessão" : `${m.total} ações na sessão`
+  );
   setText("statusCloud", "Firestore: " + getFirestoreStatus());
   setText("dashLive", "Atualizado às " + new Date().toLocaleTimeString("pt-BR"));
 
@@ -164,7 +180,7 @@ function renderCharts(m) {
     }
   }
 
-  const labels = Object.keys(m.hesitacaoPorTela);
+  const labels = Object.keys(m.hesitacaoPorTela).map((chave) => TELAS[chave] || chave);
   const vals = Object.values(m.hesitacaoPorTela);
   const ctxH = document.getElementById("chartHesita");
   if (ctxH) {

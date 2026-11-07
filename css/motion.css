@@ -136,6 +136,7 @@
 .start-gate.is-ready .start-kicker,
 .start-gate.is-ready h1,
 .start-gate.is-ready .start-lead,
+.start-gate.is-ready .ia-callout,
 .start-gate.is-ready #btnStart,
 .start-gate.is-ready .start-link,
 .start-gate.is-ready .start-note {
@@ -149,16 +150,19 @@
   animation-delay: 0.2s;
 }
 .start-gate.is-ready .start-lead {
-  animation-delay: 0.28s;
+  animation-delay: 0.26s;
+}
+.start-gate.is-ready .ia-callout {
+  animation-delay: 0.32s;
 }
 .start-gate.is-ready #btnStart {
-  animation-delay: 0.36s;
+  animation-delay: 0.4s;
 }
 .start-gate.is-ready .start-link {
-  animation-delay: 0.44s;
+  animation-delay: 0.48s;
 }
 .start-gate.is-ready .start-note {
-  animation-delay: 0.5s;
+  animation-delay: 0.54s;
 }
 
 #demoShell.is-entering .phone-stage {
@@ -175,6 +179,12 @@
 
 .phone-bezel.is-alive {
   animation: phoneFloat 5.5s ease-in-out infinite, softPulse 3.8s ease-in-out infinite;
+}
+
+@media (max-width: 979px) {
+  .phone-bezel.is-alive {
+    animation: none;
+  }
 }
 
 .phone-screen.screen-enter > * {

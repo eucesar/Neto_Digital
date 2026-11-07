@@ -193,6 +193,13 @@ a {
   outline-offset: 2px;
 }
 
+@media (max-width: 720px) {
+  :root {
+    --font-base: 17px;
+    --touch: 48px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

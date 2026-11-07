@@ -23,12 +23,13 @@ const MAPA = {
   sessao_inicio: { texto: "Sessão iniciada", icone: "▶️", tom: "ok" },
 };
 
-const TELAS = {
+export const TELAS = {
   lock: "bloqueio",
   home: "início",
   dialer: "telefone",
   whatsapp: "mensagens",
   settings: "configurações",
+  banco: "banco",
 };
 
 export function rotuloEvento(ev) {
@@ -77,17 +78,19 @@ export function historicoResumido(eventos) {
   const lista = Array.isArray(eventos) ? [...eventos] : [];
   const out = [];
   let digitosSeguidos = 0;
+  let telaDigitos = "";
 
   for (const ev of lista) {
     if (ev.tipo === "digito") {
       digitosSeguidos += 1;
+      telaDigitos = ev.tela || telaDigitos;
       continue;
     }
     if (digitosSeguidos) {
       out.push(
         rotuloEvento({
           tipo: "digito",
-          tela: "dialer",
+          tela: telaDigitos || "dialer",
           risco: "nenhum",
           timestamp: Date.now(),
         })
@@ -96,17 +99,22 @@ export function historicoResumido(eventos) {
         digitosSeguidos === 1
           ? "Digitou no teclado"
           : `Digitou ${digitosSeguidos} números`;
+      out[out.length - 1].simulado = false;
       digitosSeguidos = 0;
+      telaDigitos = "";
     }
-    out.push(rotuloEvento(ev));
+    const item = rotuloEvento(ev);
+    item.simulado = Boolean(ev.simulado);
+    out.push(item);
   }
   if (digitosSeguidos) {
     out.push({
       texto: `Digitou ${digitosSeguidos} números`,
       icone: "⌨️",
       tom: "info",
-      detalhe: "",
+      detalhe: telaDigitos ? `em ${TELAS[telaDigitos] || telaDigitos}` : "",
       risco: "nenhum",
+      simulado: false,
       timestamp: Date.now(),
     });
   }

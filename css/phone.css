@@ -1,16 +1,22 @@
+/* Mobile first: o celular ocupa a primeira dobra; os dados vêm no scroll. */
 .demo-layout {
-  display: grid;
-  grid-template-columns: 1fr minmax(300px, 380px);
-  gap: 1.75rem;
-  max-width: 1180px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  width: min(100%, 720px);
   margin: 0 auto;
-  padding: 1.25rem 1.25rem 7rem;
-  align-items: start;
+  padding: 0.85rem 0.9rem calc(11.5rem + env(safe-area-inset-bottom));
+  align-items: stretch;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 980px) {
   .demo-layout {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: minmax(320px, 460px) minmax(320px, 1fr);
+    gap: 1.75rem;
+    width: min(100%, 1180px);
+    padding: 1.25rem 1.25rem 8.5rem;
+    align-items: start;
   }
 }
 
@@ -18,8 +24,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.1rem;
+  gap: 0.8rem;
   position: relative;
+  width: 100%;
+}
+
+@media (min-width: 980px) {
+  .phone-stage {
+    gap: 1.1rem;
+  }
 }
 
 .phone-stage::before {
@@ -68,23 +81,79 @@
   z-index: 1;
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: clamp(1.2rem, 4.5vw, 1.45rem);
   letter-spacing: -0.02em;
   text-align: center;
+  padding: 0 0.35rem;
 }
 
 .stage-sub {
   position: relative;
   z-index: 1;
-  margin: -0.35rem 0 0.25rem;
+  margin: -0.15rem 0 0.15rem;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   text-align: center;
+  width: min(100%, 28rem);
+  line-height: 1.4;
+  padding: 0 0.35rem;
+}
+
+.scroll-dados {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 400px);
+  background: rgba(18, 24, 38, 0.92);
+  color: var(--cream);
+  border: 1px solid rgba(245, 193, 74, 0.4);
+  border-radius: 16px;
+  min-height: 48px;
+  padding: 0.4rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.05rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.scroll-dados span {
+  font-weight: 800;
+  color: var(--yellow);
+  line-height: 1.2;
+}
+
+.scroll-dados small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.scroll-label-desktop {
+  display: none;
+}
+
+@media (min-width: 980px) {
+  .scroll-label-mobile {
+    display: none;
+  }
+  .scroll-label-desktop {
+    display: inline;
+  }
+  .scroll-dados {
+    min-height: 56px;
+    background: rgba(18, 24, 38, 0.55);
+    box-shadow: none;
+  }
 }
 
 .phone-bezel {
   width: min(100%, 400px);
-  height: min(76vh, 780px);
+  height: min(520px, calc(100vh - 22rem));
+  height: min(520px, calc(100svh - 22rem));
+  min-height: 420px;
   background: linear-gradient(160deg, #2c3348 0%, #141824 55%, #0d1018 100%);
   border-radius: 40px;
   padding: 14px;
@@ -94,6 +163,13 @@
     0 40px 80px rgba(0, 0, 0, 0.55);
   position: relative;
   z-index: 1;
+}
+
+@media (min-width: 980px) {
+  .phone-bezel {
+    height: min(76vh, 780px, calc(100vh - 19rem));
+    min-height: 420px;
+  }
 }
 
 .phone-notch {
@@ -863,18 +939,191 @@ body.alto-contraste .phone-screen {
   min-height: 44px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 979px) {
   .phone-bezel {
-    width: 100%;
-    height: calc(100vh - 160px);
-    border-radius: 0;
-    padding: 0;
-    box-shadow: none;
+    border-radius: 32px;
+    padding: 10px;
   }
+
   .phone-screen {
-    border-radius: 0;
+    border-radius: 24px;
+    overflow-x: hidden;
   }
+
   .phone-notch {
+    width: 96px;
+    height: 18px;
+    top: 14px;
+  }
+
+  .lock-time {
+    font-size: 3.05rem;
+  }
+
+  .lock-screen {
+    padding: 2.6rem 0.9rem 1rem;
+  }
+
+  .lock-screen:has(#pinPanel:not(.hidden)) {
+    justify-content: flex-start;
+    gap: 0.2rem;
+    padding: 2.15rem 0.8rem 0.55rem;
+  }
+
+  .lock-screen:has(#pinPanel:not(.hidden)) .lock-clock {
     display: none;
+  }
+
+  .lock-screen:has(#pinPanel:not(.hidden)) .lock-hint {
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .pin-title {
+    margin: 0.1rem 0 0;
+  }
+
+  .pin-panel .btn-back {
+    min-height: 40px;
+    margin-bottom: 0.2rem;
+    padding: 0.3rem 0.7rem;
+  }
+
+  .pin-dots {
+    margin: 0.35rem 0;
+  }
+
+  .pin-key,
+  .dial-key {
+    min-height: 46px;
+  }
+
+  .pin-pad,
+  .dialer-pad {
+    gap: 0.35rem;
+  }
+
+  .home-screen {
+    padding: 0.85rem 0.8rem 0.65rem;
+  }
+
+  .home-screen .btn-back {
+    margin-bottom: 0.4rem;
+    min-height: 42px;
+    padding: 0.35rem 0.7rem;
+  }
+
+  .home-greet {
+    font-size: 1.35rem;
+  }
+
+  .home-sub {
+    margin: 0.15rem 0 0.65rem;
+  }
+
+  .app-tile {
+    min-height: 84px;
+    padding: 0.6rem 0.35rem;
+    gap: 0.25rem;
+  }
+
+  .app-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+  }
+
+  .app-label {
+    text-align: center;
+    font-size: 0.92rem;
+    line-height: 1.2;
+  }
+
+  .btn-cesar,
+  .btn-unlock {
+    min-height: 52px;
+    font-size: 1.02rem;
+  }
+
+  .btn-cesar {
+    margin-top: 0.7rem;
+  }
+
+  .wa-compose input {
+    min-width: 0;
+  }
+
+  .wa-messages {
+    max-height: 220px;
+    min-height: 140px;
+  }
+
+  .wa-bubble,
+  .contact-row,
+  .bank-extrato li {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-height: 700px) {
+  .phone-bezel {
+    min-height: 360px;
+    height: min(560px, calc(100svh - 12.5rem));
+  }
+}
+
+@media (max-height: 920px) {
+  .home-screen {
+    padding: 1.1rem 0.75rem 0.35rem;
+  }
+
+  .home-screen .btn-back {
+    min-height: 38px;
+    margin-bottom: 0.25rem;
+    padding: 0.25rem 0.65rem;
+  }
+
+  .home-greet {
+    font-size: 1.3rem;
+    line-height: 1.1;
+  }
+
+  .home-sub {
+    margin: 0.05rem 0 0.25rem;
+  }
+
+  .home-grid {
+    gap: 0.4rem;
+  }
+
+  .app-tile {
+    min-height: 76px;
+    padding: 0.45rem 0.3rem;
+    gap: 0.2rem;
+  }
+
+  .app-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.35rem;
+  }
+
+  .btn-cesar {
+    min-height: 48px;
+    margin-top: 0.15rem;
+  }
+
+  .lock-screen:has(#pinPanel:not(.hidden)) {
+    justify-content: flex-start;
+    gap: 0.2rem;
+    padding: 2.15rem 0.8rem 0.55rem;
+  }
+
+  .lock-screen:has(#pinPanel:not(.hidden)) .lock-clock {
+    display: none;
+  }
+
+  .pin-key {
+    min-height: 46px;
   }
 }

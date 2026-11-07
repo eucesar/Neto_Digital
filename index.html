@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content="Neto Digital — narrador inteligente do celular para idosos" />
     <title>Neto Digital — Demonstração</title>
+    <link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -31,6 +32,13 @@
           O narrador que fica do lado da Dona Gina — fala o próximo passo,
           avisa golpe e mostra tudo isso para a família no painel.
         </p>
+        <aside class="ia-callout" role="note">
+          <p class="ia-callout-kicker">No celular e neste site</p>
+          <p>
+            <strong>A inteligência artificial só funciona quando você baixa o projeto e roda no seu computador.</strong>
+            Aqui dá para testar o celular da Dona Gina. Se rolar a página, os dados aparecem: um padrão da manhã que aumenta conforme você mexe.
+          </p>
+        </aside>
         <button type="button" id="btnStart" aria-label="Começar a demonstração">
           Começar a demonstração
         </button>
@@ -44,11 +52,16 @@
         <div class="phone-stage">
           <div class="stage-badge" aria-hidden="true"><span class="dot"></span> Ao vivo</div>
           <p class="stage-title">Celular da Dona Gina</p>
-          <p class="stage-sub">Toque, ouça o Neto e acompanhe os selos ao lado</p>
+          <p class="stage-sub">O celular é a demonstração. A IA completa roda no computador.</p>
           <div class="phone-bezel" id="phone-bezel">
             <div class="phone-notch" aria-hidden="true"></div>
             <div class="phone-screen" id="phone-screen" role="main" aria-label="Celular simulado"></div>
           </div>
+          <button type="button" class="scroll-dados" id="btnScrollDados" aria-controls="sessaoDados">
+            <span class="scroll-label-mobile">Ver os dados da sessão</span>
+            <span class="scroll-label-desktop">Os dados ficam ao lado</span>
+            <small>Padrão da manhã. Cada toque seu aumenta os números.</small>
+          </button>
         </div>
 
         <aside class="presenter-panel" id="presenter-panel" aria-label="Painel do apresentador">
@@ -63,6 +76,28 @@
             <button type="button" id="presenterToggle" aria-label="Recolher painel">Recolher</button>
           </div>
           <div class="presenter-body">
+            <aside class="ia-callout" role="note">
+              <p class="ia-callout-kicker">IA no computador</p>
+              <p>
+                <strong>A inteligência artificial e o Firebase só entram de verdade quando você baixa o projeto e executa no seu computador.</strong>
+                Neste site o celular vem primeiro. Os dados abaixo começam num padrão simulado e sobem a cada toque — no celular e no computador.
+              </p>
+            </aside>
+
+            <section class="sessao-dados" id="sessaoDados" aria-label="Dados da sessão">
+              <div class="sessao-head">
+                <h2>Dados da sessão</h2>
+                <span class="sessao-badge" id="sessaoBadge">Padrão simulado</span>
+              </div>
+              <p class="sessao-lead" id="sessaoLead">
+                Um dia típico da Dona Gina. O que você fizer no celular soma em cima desse padrão.
+              </p>
+              <div class="sessao-kpis" id="sessaoKpis" aria-live="polite"></div>
+              <div class="sessao-bars" id="sessaoBars"></div>
+              <h3 class="sessao-sub">Linha do tempo</h3>
+              <ul class="pres-history" id="sessaoHistory"></ul>
+            </section>
+
             <div class="selo-row" aria-label="Selos dos requisitos">
               <div class="selo" id="selo-visao"><span>👁️</span> Visão</div>
               <div class="selo" id="selo-ia"><span>🤖</span> IA</div>
@@ -125,7 +160,9 @@
 
             <div class="pres-block">
               <h3>Fila de falas</h3>
-              <p id="presFila" class="pres-fila">(vazia)</p>
+              <ul id="presFila" class="pres-fila">
+                <li class="empty">(vazia)</li>
+              </ul>
             </div>
 
             <a class="pres-family-link" href="painel.html">Abrir painel da família →</a>

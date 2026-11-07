@@ -147,6 +147,18 @@
   line-height: 1.5;
 }
 
+.dash-note {
+  margin: 0.8rem 0 0;
+  padding: 0.75rem 0.85rem;
+  border-radius: 14px;
+  background: rgba(245, 193, 74, 0.12);
+  border: 1px solid rgba(245, 193, 74, 0.35);
+  color: #f6edd8;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  max-width: 40rem;
+}
+
 .dash-nav {
   margin-top: 0.9rem;
 }
@@ -323,15 +335,9 @@
 
 .insight-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 0.85rem;
   margin-bottom: 1.4rem;
-}
-
-@media (max-width: 900px) {
-  .insight-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .insight {
@@ -399,7 +405,38 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 680px) {
+  .dash {
+    padding: 1rem 0.85rem 2.75rem;
+  }
+
+  .dash-hero {
+    padding: 1.05rem 0.95rem;
+  }
+
+  .dash-hero-actions {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .btn-export {
+    width: 100%;
+  }
+
+  .status-banner {
+    padding: 1.1rem 1rem;
+  }
+
+  .status-meta {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .history-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .cards.cards-family {
     grid-template-columns: 1fr;
   }

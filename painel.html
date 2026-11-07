@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Neto Digital — Painel da família</title>
+    <link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -28,6 +29,9 @@
             <h1>Como a Dona Gina está hoje</h1>
             <p class="dash-sub">
               Resumo claro do que o narrador viu — sem precisar olhar o celular dela.
+            </p>
+            <p class="dash-note" id="dashPadrao">
+              Os números começam num padrão simulado da manhã e crescem com o uso. A IA e o Firebase de verdade funcionam quando você baixa o projeto e roda no computador.
             </p>
             <nav class="dash-nav">
               <a href="index.html">← Voltar à demo</a>
@@ -99,7 +103,7 @@
           <span class="card-ico" aria-hidden="true">🤖</span>
           <span>Chamadas à IA</span>
           <strong id="mIa">0</strong>
-          <small>visão / golpes</small>
+          <small id="mIaHint">visão / golpes</small>
         </article>
         <article class="card">
           <span class="card-ico" aria-hidden="true">🗣️</span>
